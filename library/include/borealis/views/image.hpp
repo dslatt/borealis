@@ -105,6 +105,14 @@ class Image : public View
      */
     void setImageFromMem(const unsigned char* data, int size);
 
+    /**
+     * Sets the image from memory already loaded.
+     *
+     * See Image class documentation for the list of supported
+     * image formats.
+     */
+    void setImageFromMemRGBA(const unsigned char* data, int width, int height);
+
     virtual void innerSetImage(int texture);
 
     void setImageAsync(std::function<void(std::function<void(const std::string&, size_t length)>)> cb);
@@ -140,6 +148,8 @@ class Image : public View
     float getOriginalImageHeight();
 
     static View* create();
+
+    bool allowCaching = true;
 
   protected:
     ImageScalingType scalingType     = ImageScalingType::FIT;

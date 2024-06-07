@@ -297,14 +297,18 @@ size_t Image::checkCache(const std::string& path)
 void Image::setImageFromRes(const std::string& path)
 {
     // Let TextureCache to manage when to delete texture
-    this->setFreeTexture(false);
+    if (allowCaching)
+        this->setFreeTexture(false);
+    else
+        this->setFreeTexture(true);
 
 #ifdef USE_LIBROMFS
-    if (checkCache("@res/" + path) > 0)
+    if (allowCaching && checkCache("@res/" + path) > 0)
         return;
     auto image = romfs::get(path);
     this->setImageFromMem((unsigned char*)image.data(), (int)image.size());
-    TextureCache::instance().addCache("@res/" + path, this->texture);
+    if (allowCaching)
+        TextureCache::instance().addCache("@res/" + path, this->texture);
 #else
     this->setImageFromFile(std::string(BRLS_RESOURCES) + path);
 #endif
@@ -326,13 +330,16 @@ int Image::getImageFlags()
 void Image::setImageFromFile(const std::string& path)
 {
     // Let TextureCache to manage when to delete texture
-    this->setFreeTexture(false);
+    if (allowCaching)
+        this->setFreeTexture(false);
+    else
+        this->setFreeTexture(true);
 
 #ifdef USE_LIBROMFS
     if (path.rfind("@res/", 0) == 0)
         return this->setImageFromRes(path.substr(5));
 #endif
-    if (checkCache(path) > 0)
+    if (allowCaching && checkCache(path) > 0)
         return;
 
     // Load texture
@@ -340,7 +347,13 @@ void Image::setImageFromFile(const std::string& path)
     innerSetImage(tex);
 
     // Save cache
-    TextureCache::instance().addCache(path, tex);
+    if (allowCaching)
+        TextureCache::instance().addCache(path, tex);
+}
+
+void Image::setImageFromMemRGBA(const unsigned char* data, int width, int height)
+{
+    innerSetImage(nvgCreateImageRGBA(brls::Application::getNVGContext(), width, height, 0, data));
 }
 
 void Image::setImageFromMem(const unsigned char* data, int size)
