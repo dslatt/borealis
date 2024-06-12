@@ -28,7 +28,7 @@ const std::string detailCellXML = R"xml(
         paddingBottom="12.5"
         paddingLeft="@style/brls/listitem/descriptionIndent"
         paddingRight="@style/brls/listitem/descriptionIndent"
-        alignItems="center">
+        >
 
         <brls:Label
             id="brls/rediocell/title"
