@@ -1167,7 +1167,7 @@ int Application::getFont(std::string fontName)
 int Application::getDefaultFont()
 {
 #ifdef __SWITCH__
-    static int regular = Application::getFont(FONT_CHINESE_SIMPLIFIED);
+    static int regular = Application::getFont(FONT_REGULAR);
 #else
     static int regular = Application::getFont(FONT_REGULAR);
 #endif
